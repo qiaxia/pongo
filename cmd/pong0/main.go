@@ -15,13 +15,14 @@ import (
 
 // 命令行选项定义
 var (
-	ip            string // 要查询的IP地址
-	port          string // API服务器端口
-	apiKey        string // API访问密钥
-	serverMode    bool   // 是否启动API服务器模式
-	verbose       bool   // 详细输出模式
-	manualX1Value string // 手动指定x1值
-	showVersion   bool   // 显示版本信息
+	ip              string // 要查询的IP地址
+	port            string // API服务器端口
+	apiKey          string // API访问密钥
+	serverMode      bool   // 是否启动API服务器模式
+	verbose         bool   // 详细输出模式
+	manualX1Value   string // 手动指定x1值
+	manualDiffValue string // 手动指定difficulty值
+	showVersion     bool   // 显示版本信息
 )
 
 // 构建信息，在编译时通过-ldflags注入
@@ -40,6 +41,7 @@ func init() {
 	flag.StringVar(&port, "p", "8080", "API服务器监听端口")
 	flag.StringVar(&apiKey, "k", "", "API访问密钥")
 	flag.StringVar(&manualX1Value, "x1", "", "手动指定x1值")
+	flag.StringVar(&manualDiffValue, "diff", "", "手动指定difficulty值")
 	flag.BoolVar(&serverMode, "c", false, "启动API服务器模式")
 	flag.BoolVar(&verbose, "all", false, "输出详细日志")
 	flag.BoolVar(&showVersion, "v", false, "显示版本信息")
@@ -56,6 +58,9 @@ func main() {
 		return
 	}
 
+	// 验证参数组合是否合法
+	validateCommandLineOptions()
+
 	// 将命令行参数应用到全局配置
 	applyCommandLineOptions()
 
@@ -64,6 +69,27 @@ func main() {
 		runServerMode()
 	} else {
 		runQueryMode()
+	}
+}
+
+// validateCommandLineOptions 验证命令行参数组合的有效性
+func validateCommandLineOptions() {
+	// 检查 -c 和 -all 参数是否同时使用
+	if serverMode && verbose {
+		fmt.Println("错误: -c 和 -all 参数不能同时使用")
+		fmt.Println("用法示例:")
+		fmt.Println("  服务器模式: pong0 -c -p 8080 -k your_api_key")
+		fmt.Println("  查询模式: pong0 -ip 1.1.1.1")
+		os.Exit(1)
+	}
+
+	// 检查 -p 和 -k 参数是否在没有 -c 参数的情况下使用
+	if !serverMode && (port != "8080" || apiKey != "") {
+		fmt.Println("错误: -p 和 -k 参数只能在服务器模式(-c)下使用")
+		fmt.Println("用法示例:")
+		fmt.Println("  服务器模式: pong0 -c -p 8080 -k your_api_key")
+		fmt.Println("  查询模式: pong0 -ip 1.1.1.1")
+		os.Exit(1)
 	}
 }
 
@@ -79,6 +105,10 @@ func applyCommandLineOptions() {
 
 	if manualX1Value != "" {
 		constants.ManualX1Value = manualX1Value
+	}
+
+	if manualDiffValue != "" {
+		constants.ManualDiffValue = manualDiffValue
 	}
 
 	if apiKey != "" {

@@ -35,29 +35,30 @@ func ProcessIPInfo(queryIP string) (*models.IPInfo, error) {
 		log.Printf("开始查询IP信息: %s", queryIP)
 	}
 
-	// 步骤1: 获取初始页面，提取x1值和JavaScript路径
+	// 步骤1: 获取初始页面，提取x1值、difficulty值和JavaScript路径
 	stepStartTime := time.Now()
-	x1Value, jsPath, err := client.GetInitialPage()
+	x1Value, difficultyValue, jsPath, err := client.GetInitialPage()
 	if err != nil {
 		return nil, fmt.Errorf("Step 1 失败: %w", err)
 	}
 	if constants.Verbose {
 		log.Printf("成功获取x1值: %s", x1Value)
+		log.Printf("成功获取difficulty值: %s", difficultyValue)
 		log.Printf("JS路径: %s", jsPath)
 		log.Printf("Step 1 完成，耗时: %s", time.Since(stepStartTime))
 	}
 
 	// 步骤2: 生成访问密钥并获取包含IP信息的最终页面
 	stepStartTime = time.Now()
-	key, err := parser.GenerateKey(jsPath, x1Value)
+	keys, err := parser.GenerateKey(jsPath, x1Value, difficultyValue)
 	if err != nil {
 		return nil, fmt.Errorf("Step 2 失败: %w", err)
 	}
 	if constants.Verbose {
-		log.Printf("成功生成key: %s", key)
+		log.Printf("成功生成keys: js1key=%s, pow=%s", keys.Js1key, keys.Pow)
 	}
 
-	finalHtml, err := client.GetFinalPage(key)
+	finalHtml, err := client.GetFinalPage(keys)
 	if err != nil {
 		return nil, fmt.Errorf("Step 2 失败: %w", err)
 	}
