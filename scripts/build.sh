@@ -34,7 +34,7 @@ else
     echo -e "\e[33m未找到README.md文件\e[0m"
 fi
 
-# 定义构建平台
+# 定义构建平台（新增 FreeBSD 支持）
 declare -a PLATFORMS=(
     "windows:amd64:.exe:Windows 64位"
     "windows:386:.exe:Windows 32位"
@@ -43,6 +43,9 @@ declare -a PLATFORMS=(
     "linux:arm64::Linux ARM64"
     "darwin:amd64::macOS 64位"
     "darwin:arm64::macOS ARM64"
+    # 新增 FreeBSD 的构建目标
+    "freebsd:amd64::FreeBSD 64位"
+    "freebsd:arm64::FreeBSD ARM64"
 )
 
 # 主程序路径
@@ -99,4 +102,4 @@ done
 # 恢复原来的工作目录
 popd > /dev/null
 
-echo -e "\n\e[32m构建完成！所有文件已保存在$DIST_DIR目录中。\e[0m" 
+echo -e "\n\e[32m构建完成！所有文件已保存在$DIST_DIR目录中。\e[0m"
