@@ -19,7 +19,7 @@ If (-not (Test-Path -Path $distDir)) {
 }
 
 # 版本信息
-$version = "1.0.0"
+$version = "1.0.5"
 $buildDate = Get-Date -Format "yyyy-MM-dd"
 $updateDate = Get-Date -Format "yyyy-MM-dd"
 
