@@ -22,14 +22,14 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/pong0.git
-cd pong0
+git clone https://github.com/yourusername/pongo.git
+cd pongo
 
 # 安装依赖
 go mod tidy
 
 # 构建程序
-go build -o pong0.exe ./cmd/pong0
+go build -o pongo.exe ./cmd/pongo
 ```
 
 ### 使用打包脚本
@@ -52,10 +52,10 @@ go build -o pong0.exe ./cmd/pong0
 
 ```bash
 # 获取当前IP信息，以JSON格式输出
-.\pong0.exe
+.\pongo.exe
 
 # 查询指定IP地址
-.\pong0.exe -ip 1.1.1.1
+.\pongo.exe -ip 1.1.1.1
 ```
 
 ### 参数选项
@@ -81,10 +81,10 @@ go build -o pong0.exe ./cmd/pong0
 
 ```bash
 # 启动API服务器模式（默认端口8080）
-.\pong0.exe -c
+.\pongo.exe -c
 
 # 指定自定义端口
-.\pong0.exe -c -p 3000
+./pongo.exe -c -p 3000
 
 # 启用API密钥验证
 .\pong0.exe -c -k YOUR_SECRET_KEY
